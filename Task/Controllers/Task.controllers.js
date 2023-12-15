@@ -21,6 +21,158 @@ const publishEvent = async (subject, data) => {
     }
 };
 
+export const CreateTask = async (req, res) => {
+    try {
+        const { title, description, priority, dueDate, adminId } = req.body;
+
+        const isAdmin = await User.findOne({ _id: adminId, type: "admin" })
+        if (!isAdmin) return res.status(401).json({ error: "Admin not found." })
+
+        const newTask = new Task({ title, description, priority, dueDate });
+        await newTask.save();
+
+        res.status(201).json({ success: true, newTask });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+export const UpdateTask = async (req, res) => {
+    try {
+        const { id, title, description, priority, dueDate, adminId } = req.body;
+
+        const isAdmin = await User.findOne({ _id: adminId, type: "admin" })
+        if (!isAdmin) return res.status(401).json({ error: "Admin not found." })
+
+        const updatedTask = await Task.findByIdAndUpdate(id, { title, description, priority, dueDate }, { new: true });
+
+        res.status(201).json({ success: true, updatedTask });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+export const SortSearch = async (req, res) => {
+    try {
+
+        const { adminId, searchQuery, sortBy } = req.body;
+
+        const isAdmin = await User.findOne({ _id: adminId, type: "admin" })
+        if (!isAdmin) return res.status(401).json({ error: "Admin not found." })
+
+        const query = {};
+        if (searchQuery) {
+            query.$or = [
+                { title: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } },
+            ];
+        }
+
+        let sort = {};
+        switch (sortBy) {
+            case 'completionStatus':
+                sort.completed = 1;
+                break;
+            case 'dueDate':
+                sort.dueDate = 1;
+                break;
+            case 'priority':
+                sort.priority = 1;
+                break;
+            default:
+                sort.createdAt = -1;
+                break;
+        }
+
+        const tasks = await Task.find(query).sort(sort);
+
+        res.status(201).json({ success: true, tasks });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+export const ReadOwnTasks = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        const userTasks = await Task.find({ userId: userId });
+
+        res.status(201).json({ success: true, userTasks });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+export const MarkTaskAsComplete = async (req, res) => {
+    try {
+        const { userId, taskId } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        const task = await Task.findOne({ _id: taskId, userId });
+        if (!task) {
+            return res.status(404).json({ error: "Task not found or does not belong to the user." });
+        }
+
+        task.completed = true;
+        await task.save();
+
+        const eventData = {
+            userId: userId,
+            taskId: taskId,
+            completedAt: new Date(),
+        };
+
+        await publishEvent('TASK_COMPLETED', JSON.stringify(eventData));
+
+        res.status(201).json({ success: true, task });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+export const AssignTaskToUser = async (req, res) => {
+    try {
+        const { adminId, taskId, assignedUserId } = req.body;
+
+        const isAdmin = await User.findOne({ _id: adminId, type: "admin" });
+        if (!isAdmin) {
+            return res.status(401).json({ error: "Admin not found." });
+        }
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ error: "Task not found." });
+        }
+
+        const assignedUser = await User.findById(assignedUserId);
+        if (!assignedUser) {
+            return res.status(404).json({ error: "Assigned user not found." });
+        }
+
+        task.userId = assignedUserId;
+        await task.save();
+
+        res.status(201).json({ success: true, task });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
 
 
 export const CompleteTask = async (req, res) => {

@@ -32,3 +32,23 @@ export const DeleteUser = async (req, res) => {
         return res.status(500).json({ success: false, error: error })
     }
 }
+
+export const ReadUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json({ success: true, users });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
+
+
+export const ReadOwnData = async (req, res) => {
+    try {
+        const { id } = req.body;
+        const user = await User.findById(id);
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error })
+    }
+}
