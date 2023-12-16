@@ -4,18 +4,18 @@ import { CompleteTask, CreateTask, UpdateTask, SortSearch, ReadOwnTasks, MarkTas
 
 const router = Router();
 
-app.post('/createTask', CreateTask);
+router.post('/createTask', CreateTask);
 
-app.post('/updateTask', UpdateTask);
+router.post('/updateTask', UpdateTask);
 
-app.post('/sortSearch', SortSearch)
+router.post('/sortSearch', SortSearch)
 
-app.post('/readOwnTasks', ReadOwnTasks);
+router.post('/readOwnTasks', ReadOwnTasks);
 
-app.post('/markTaskAsComplete', MarkTaskAsComplete);
+router.post('/markTaskAsComplete', MarkTaskAsComplete);
 
-app.post('/assignTaskToUser', AssignTaskToUser);
+router.post('/assignTaskToUser', AssignTaskToUser);
 
-app.post('/tasks/complete', CompleteTask);
+router.post('/tasks/complete', CompleteTask);
 
 export default router;

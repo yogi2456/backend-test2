@@ -1,4 +1,6 @@
 import { connect } from "mongoose";
+import User from "../../User/Modals/User.modals.js";
+import Task from "../Modals/Task.modals.js"
 
 const natsOptions = {
     servers: ['nats://localhost:4222'],
