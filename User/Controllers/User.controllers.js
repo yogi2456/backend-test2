@@ -2,9 +2,10 @@ import User from "../Modals/User.modals.js";
 
 export const CreateUser = async (req, res) => {
     try {
-        const { username, email, type, adminId } = req.body;
+        const { username, email, type, adminId} = req.body;
 
         const isAdmin = await User.findOne({ _id: adminId, type: "admin" })
+        
         if (!isAdmin) return res.status(401).json({success: false, error: "Admin is wrong." })
 
         const newUser = new User({ username, email, type });

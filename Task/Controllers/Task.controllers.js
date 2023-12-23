@@ -1,4 +1,4 @@
-import { connect } from "mongoose";
+import { connect } from "nats";
 import User from "../../User/Modals/User.modals.js";
 import Task from "../Modals/Task.modals.js"
 
