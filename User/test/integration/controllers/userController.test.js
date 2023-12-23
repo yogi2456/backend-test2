@@ -1,6 +1,6 @@
-const { expect } = require('chai');
-const supertest = require('supertest');
-const app = require('../../../index');
+import { expect } from "chai";
+import supertest from "supertest";
+import app from "../../../index.js";
 
 
 describe('Integration Testing: CreateUser Controller', () => {
@@ -10,9 +10,8 @@ describe('Integration Testing: CreateUser Controller', () => {
             username: 'testuser',
             email: 'test@example.com',
             type: 'regular',
-            adminId: '657d8946d9112737bd058c16',
+            adminId: '6571a707362599a503c76633',
         };
-        //6571a707362599a503c76633
         const response = await supertest(app)
             .post('/createUser')
             .send(requestBody);

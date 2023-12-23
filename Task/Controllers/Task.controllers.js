@@ -1,5 +1,5 @@
 import { connect } from "nats";
-import User from "../../User/Modals/User.modals.js";
+import User from "../Modals/User.modal.js";
 import Task from "../Modals/Task.modals.js"
 
 const natsOptions = {

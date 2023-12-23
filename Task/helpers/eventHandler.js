@@ -1,4 +1,4 @@
-import { connect } from "mongoose";
+import { connect } from "nats";
 
 async function publishEvent(event) {
     const nc = await connect({ servers: 'nats://localhost:4222' });

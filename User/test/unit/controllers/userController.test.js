@@ -1,8 +1,8 @@
-const { expect } = require('chai');
-const sinon = require('sinon');
-const supertest = require('supertest');
-const app = require('../../../index'); 
-const User = require('../../../modals/user.modal');
+import app from "../../../index.js";
+import { expect } from "chai";
+import sinon from "sinon";
+import supertest from "supertest";
+import User from "../../../Modals/User.modals.js";
 
 describe('CreateUser Controller', () => {
     beforeEach(() => {
@@ -34,13 +34,13 @@ describe('CreateUser Controller', () => {
     it('should handle errors', async () => {
         const UserMock = sinon.mock(User);
 
-        UserMock.expects('findOne').once().withArgs({ _id: '657d8946d9112737bd058c16', type: 'admin' }).resolves(null);
+        UserMock.expects('findOne').once().withArgs({ _id: '6571b55da26a494b30c631e2', type: 'admin' }).resolves(null);
 
         const requestBody = {
             username: 'testuser',
             email: 'test@example.com',
             type: 'user',
-            adminId: '657d8946d9112737bd058c16',
+            adminId: '6571b55da26a494b30c631e2',
         };
 
         const response = await supertest(app)
