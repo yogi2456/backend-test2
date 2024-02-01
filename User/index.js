@@ -36,7 +36,9 @@ const natsOptions = {
   
   const handleTaskCompletedEvent = (msg) => {
     const eventData = JSON.parse(msg.data);
-    console.log(`User ${eventData.userId} completed task ${eventData.taskId} at ${eventData.completedAt}`);
+    // console.log(`User ${eventData.userId} completed task ${eventData.taskId} at ${eventData.completedAt}`);
+    console.log( eventData , " eventData") 
+
   };
   
   const subscribeToTaskCompletedEvent = async () => {
@@ -44,6 +46,7 @@ const natsOptions = {
       const nc = await connect(natsOptions);
       console.log('Connected to NATS server.');
       const subscription = nc.subscribe('TASK_COMPLETED', (err, msg) => {
+        console.log(err, "err")
         try {
           handleTaskCompletedEvent(msg);
           console.log('Received TASK_COMPLETED event');
